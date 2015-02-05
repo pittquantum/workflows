@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Take the first argument of the script
+BASE=`pwd`
+mopac='/opt/mopac/MOPAC2012.exe'
+
+/bin/date
+
+for x in {A..Z}; do
+  for y in {A..Z}; do
+    (cd $x/$y;
+      for z in *.mop; do
+        if [ -f ${z%%.mop}.out ]; then
+           echo $x $y $z;
+        elif [ -f $z ]; then
+           $mopac $z;
+        fi
+      done
+    )
+  done
+done
