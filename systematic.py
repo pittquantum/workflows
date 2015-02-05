@@ -2,6 +2,7 @@
 
 import sys
 import os
+from distutils.dir_util import mkpath
 
 import pybel
 import openbabel as ob
@@ -9,6 +10,7 @@ import openbabel as ob
 import alkyl
 import globalopt
 
+# get a list of fragments
 chains = alkyl.alkyls()
 
 # OK, remove chemical duplicates
@@ -120,3 +122,12 @@ for smi in smiles:
         # save the smiles string for now
         inchis[ikey] = smi
         # globalopt and output
+        globalopt.globalopt(mol)
+
+        # write as 3D sdf
+        filename = "library/%s/%s/%s" % (ikey[0], ikey[1], ikey)
+        mkpath('library/%s/%s' % (ikey[0], ikey[1]))
+        if not os.path.isfile(filename):
+            out = pybel.Outputfile("sdf", "%s.sdf" % filename, True)
+            out.write(mol)
+            out.close()
