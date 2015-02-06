@@ -105,3 +105,10 @@ benzazepine
 carbazole
 acridine
 dibenzoazepine
+2,2'-bipyridine
+2,3'-bipyridine
+2,4'-bipyridine
+3,3'-bipyridine
+3,4'-bipyridine
+4,4'-bipyridine
+2,2';6',2"-terpyridine
