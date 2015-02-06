@@ -45,11 +45,11 @@ def alkyls():
         list.append(item)
 
     # branching alkyls
-    for branching in range(3):
+    for branching in range(1):
         print "branching level: " + str(branching) + " size: " + str(len(list))
         for item in addbranches(list):
             # remove strings larger than N carbons
-            if item.count('C') <= 8:
+            if item.count('C') <= 6:
                 list.append(item)
 
     # add common branches

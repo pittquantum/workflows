@@ -1,5 +1,7 @@
 # test mopac files
 pm7/
+# results from "split"
+xa*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

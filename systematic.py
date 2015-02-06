@@ -121,13 +121,4 @@ for smi in smiles:
     if ikey not in inchis:
         # save the smiles string for now
         inchis[ikey] = smi
-        # globalopt and output
-        globalopt.globalopt(mol)
-
-        # write as 3D sdf
-        filename = "library/%s/%s/%s" % (ikey[0], ikey[1], ikey)
-        mkpath('library/%s/%s' % (ikey[0], ikey[1]))
-        if not os.path.isfile(filename):
-            out = pybel.Outputfile("sdf", "%s.sdf" % filename, True)
-            out.write(mol)
-            out.close()
+        print ikey, smi
