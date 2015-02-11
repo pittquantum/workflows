@@ -1,5 +1,5 @@
 benzene
-napthalene
+naphthalene
 anthracene
 phenanthrene
 tetracene

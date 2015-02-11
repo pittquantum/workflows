@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Get PDB ligand database
+curl -o PDB-ligands.sdf.gz  http://ligand-expo.rcsb.org/dictionaries/Components-pub.sdf.gz
+gunzip PDB-ligands.sdf
+
+# Get MMFF94 validation set
+curl --remote-name http://www.ccl.net/cca/data/MMFF94/MMFF94_hypervalent.mol2
+
+# Blue Obelisk chemical structures
+curl --remote-name http://iweb.dl.sourceforge.net/project/chem-file/Chemical%20Structures/2.2.0/chemical-structures-2.2.0.tgz
+tar xvf chemical-structures-2.2.0.tgz
+mkdir cml
+find chemical-structures-2.2.0 -name '*.cml' -exec cp {} cml \;
+rm -r chemical-structures-2.2.0
+# they are now in the cml subdirectory
