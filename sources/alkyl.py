@@ -17,6 +17,27 @@ def cyclic(max):
         list.append(smiles)
     return list
 
+def spiro(max):
+    list = []
+    # start at bridge spiro
+    for l1 in range (2, max):
+        for l2 in range (2, max):
+            smiles = "C12(%s1)(%s2)" % ("C"*l1, "C"*l2)
+            list.append(smiles)
+    return list
+
+def bicyclo(max):
+    list = []
+    # bridgeheads
+    for l1 in range(0, max):
+        for l2 in range(0, max):
+            for l3 in range(0, max):
+                if (l1 + l2 + l3) < 3:
+                    continue
+                smiles = "C(%s1)(%s2)%sC12" % ("C"*l1, "C"*l2, "C"*l3)
+                list.append(smiles)
+    return list
+
 def addbranches(list):
     branched = []
     for alkyl in list:
@@ -42,6 +63,13 @@ def alkyls():
 
     # cyclic
     for item in cyclic(10):
+        list.append(item)
+
+    # spiro rings
+    for item in spiro(5):
+        list.append(item)
+
+    for item in bicyclo(3):
         list.append(item)
 
     # branching alkyls
