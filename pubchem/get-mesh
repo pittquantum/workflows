@@ -1,0 +1,9 @@
+#!/bin/sh
+# file is CID (space) name
+curl --remote-name ftp://anonymous@ftp.ncbi.nlm.nih.gov/pubchem/Compound/Extras/CID-MeSH
+awk '{print $1;}' <CID-MeSH >CIDs.txt
+
+for x in `cat CIDs.txt`; do
+    echo $x
+    curl -o $x.sdf "http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/$x/SDF?record_type=3d" >/dev/null 2>&1
+done
