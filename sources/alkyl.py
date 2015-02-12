@@ -43,8 +43,7 @@ def addbranches(list):
     for alkyl in list:
         for i in range(1, len(alkyl)):
             if alkyl[i] == 'C':
-                branched.append(str(alkyl[0:i-1]) + '[C@C]' + str(alkyl[i+1:]))
-                branched.append(str(alkyl[0:i-1]) + '[C@@C]' + str(alkyl[i+1:]))
+                branched.append(str(alkyl[0:i-1]) + '(C)' + str(alkyl[i+1:]))
                 branched.append(str(alkyl[0:i]) + '(C)(C)' + str(alkyl[i+1:]))
     return branched
 
