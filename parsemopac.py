@@ -3,6 +3,7 @@
 import sys, os, json, glob
 
 from pqrJson import *
+import pybel
 
 # read through multiple files on command-line
 for argument in glob.iglob('pm7/*/*/*.out'):
@@ -12,6 +13,7 @@ for argument in glob.iglob('pm7/*/*/*.out'):
     print ikey
     item = getJSON(ikey)
 
+    # hand-parse the MOPAC output
     with open(argument) as f:
 
         pointGroup = "C1"
@@ -42,13 +44,34 @@ for argument in glob.iglob('pm7/*/*/*.out'):
 
         # finished parsing
         item['pointGroup'] = pointGroup
-        item['heatOfForm'] = hf
-        item['volume'] = volume
-        item['surfaceArea'] = area
-        item['homo'] = homo
-        item['lumo'] = lumo
-        item['dipole'] = dipole
-        item['dipoleMoment'] = moment
+        pm7 = {
+                'heatOfFormation': hf,
+                'volume': volume,
+                'surfaceArea': area,
+                'homo': homo,
+                'lumo': lumo,
+                'dipole': dipole,
+                'dipoleMoment': moment
+        }
+        item['pm7']  = pm7
 
         # save JSON
         saveJSON(ikey, item)
+
+    # now read as a Pybel file and update the mol2 geometry
+    mol = pybel.readfile("mopout", argument)
+    mol2name = 'mol2/%s/%s.mol2' % (ikey[0:2], ikey)
+    if os.path.isfile(mol2name):
+        mol2 = pybel.readfile("mol2", argument)
+        numAtoms = mol2.OBMol.NumAtoms()
+        for i in range(numAtoms):
+            oldAtom = mol2.atoms[i]
+            nuAtom = mol.atoms[i]
+            oldAtom.coords = nuAtom.coords
+            oldAtom.partialcharge = nuAtom.partialcharge
+    else:
+        mol2 = mol # use the mopac result
+    # update mol2 file
+    mol2.title = item['name']
+    mol2.energy = item['pm7']['heatOfFormation']
+    mol2.write('mol2', mol2name, overwrite=True)
