@@ -1,4 +1,7 @@
 # test mopac files
+mol2/
+pm7-esp/
+pm7-force/
 pm7/
 # results from "split"
 xa*

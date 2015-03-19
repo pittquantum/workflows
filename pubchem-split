@@ -1,0 +1,64 @@
+#!/usr/bin/python
+
+import sys
+import os
+import json
+from distutils.dir_util import mkpath
+
+import openbabel as ob
+import pybel
+
+# NIH resolver interface
+import cirpy
+
+with open('index.json') as index:
+    items = json.load(index)
+
+cidNames = {}
+for line in open ('CID-MeSH'):
+    tokens = line.split('\t')
+    if len(tokens) < 2:
+        continue
+
+    cid = int(tokens[0])
+    name = " ".join(tokens[1:]).strip().lower()
+
+    cidNames[cid] = name
+
+for molecule in pybel.readfile("sdf", "PC-Mesh.sdf"):
+    inchi = molecule.write("inchi").rstrip()
+    ikey = molecule.write("inchikey").rstrip()
+
+    name = None
+    try:
+        name = cirpy.resolve(inchi, 'iupac_name')
+    except Exception:
+        pass
+
+    cid = int(molecule.title)
+
+    if type(name) is list:
+        name = name[0]
+    if name is None or name == "None":
+        name = cidNames[cid]
+
+    if ikey in items:
+        item = items[ikey]
+
+    items[ikey] = {
+        'inchikey': ikey,
+        'name': name.lower(),
+        'cid': cid,
+        'formula': molecule.formula,
+        'molwt': molecule.molwt
+        }
+
+    print ikey, '\"%s\"' % name.lower(), "cid=%s" % cid
+    # split into the library
+    fileName = 'library/%s/%s/%s.mol2' % (ikey[0], ikey[1], ikey)
+    if not os.path.isfile(fileName):
+        mkpath('library/%s/%s' % (ikey[0], ikey[1]))
+        molecule.write('mol2', fileName)
+
+with open('index.json', 'w') as index:
+    json.dump(items, index, sort_keys=True, indent=4)
