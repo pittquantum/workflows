@@ -22,7 +22,7 @@ def globalopt(mol, debug=False, fast=False):
                         sys.exit("Cannot set up forcefield")
 
                 ff.ConjugateGradients(250, 1.0e-3)
-                ff.WeightedRotorSearch(250, 10)
+                ff.WeightedRotorSearch(250, 5)
                 ff.WeightedRotorSearch(250, 10)
                 ff.ConjugateGradients(100, 1.0e-5)
                 ff.GetCoordinates(mol.OBMol)
@@ -39,11 +39,13 @@ if __name__ == "__main__":
                     except IOError:
                         continue
 
-                    globalopt(mol)
+                    mol = cirpy.Molecule(ikey, ['inchikey'])
 
-                    filename = "library/%s/%s/%s" % (ikey[0], ikey[1], ikey)
-                    mkpath('library/%s/%s' % (ikey[0], ikey[1]))
+                    filename = "library/%s/%s/%s.mol2" % (ikey[0], ikey[1], ikey)
                     if not os.path.isfile(filename):
-                        out = pybel.Outputfile("sdf", "%s.sdf" % filename, True)
-                        out.write(mol)
-                        out.close()
+                        if mol.twirl_url is not None:
+                            mol.download(filename, 'mol2', True)
+                        else:
+                            globalopt(mol)
+                            mkpath('library/%s/%s' % (ikey[0], ikey[1]))
+                            mol.write("mol2", filename)

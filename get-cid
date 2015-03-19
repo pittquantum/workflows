@@ -1,0 +1,36 @@
+
+http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/%s/cids/TXT % ikey -> CID
+http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/%s/SDF?record_type=3d %cid -> 3D SDF
+
+PubChemPy
+IUPACName
+
+pcp.get_compounds(ikey, 'inchikey')
+
+print c.iupac_name
+
+
+So get CIDs for all InChI keys w/o CIDs yet
+Use CIDs to get InChI keys - check for MOPAC files
+ .. if not, go through resolver for mol2 file -> library
+
+Save all as mol2
+
+Round-trip CIDs.. check that for CID, InChI key is correct.
+
+json
+
+inchikey:
+name:
+cid:
+formula:
+molecular-weight:
+dipole-moment:
+dipole:
+heat-of-formation:
+cosmo-area:
+cosmo-volume:
+homo:
+lumo:
+point-group:
+synonyms:
