@@ -2,8 +2,11 @@
 pm7/
 # results from "split"
 xa*
+pubchem/CIDs.txt
+pubchem/*.sdf
 # other sources
 sources/PDB-Ligands.sdf
+sources/MMFF94*
 sources/*.tgz
 sources/cml/
 sources/others/
