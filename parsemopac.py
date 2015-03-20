@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 import sys, os, json, glob
+from distutils.dir_util import mkpath
 
 from pqrJson import *
 import pybel
 
 # read through multiple files on command-line
-for argument in glob.iglob('pm7/*/*/*.out'):
+for argument in glob.iglob('pm7/*/*.out'):
     fileName, fileExt = os.path.splitext(argument)
     ikey = fileName.split('/')[-1]
 
@@ -59,19 +60,23 @@ for argument in glob.iglob('pm7/*/*/*.out'):
         saveJSON(ikey, item)
 
     # now read as a Pybel file and update the mol2 geometry
-    mol = pybel.readfile("mopout", argument)
-    mol2name = 'mol2/%s/%s.mol2' % (ikey[0:2], ikey)
-    if os.path.isfile(mol2name):
-        mol2 = pybel.readfile("mol2", argument)
-        numAtoms = mol2.OBMol.NumAtoms()
-        for i in range(numAtoms):
-            oldAtom = mol2.atoms[i]
-            nuAtom = mol.atoms[i]
-            oldAtom.coords = nuAtom.coords
-            oldAtom.partialcharge = nuAtom.partialcharge
-    else:
-        mol2 = mol # use the mopac result
-    # update mol2 file
-    mol2.title = item['name']
-    mol2.energy = item['pm7']['heatOfFormation']
-    mol2.write('mol2', mol2name, overwrite=True)
+    try:
+        mol = pybel.readfile("mopout", argument).next()
+        mol2name = 'mol2/%s/%s.mol2' % (ikey[0:2], ikey)
+        if os.path.isfile(mol2name):
+            mol2 = pybel.readfile("mol2", mol2name).next()
+            numAtoms = mol2.OBMol.NumAtoms()
+            for i in range(numAtoms):
+                oldAtom = mol2.atoms[i]
+                nuAtom = mol.atoms[i]
+                oldAtom.OBAtom.SetVector(nuAtom.vector)
+                oldAtom.OBAtom.SetPartialCharge(nuAtom.partialcharge)
+        else:
+            mol2 = mol
+            mkpath("mol2/%s" % ikey[0:2])
+
+        mol2.title = str(item['name'])
+        mol2.OBMol.SetEnergy(float(item['pm7']['heatOfFormation']))
+        mol2.write('mol2', mol2name, overwrite=True)
+    except Exception:
+        print "Error: ", argument
