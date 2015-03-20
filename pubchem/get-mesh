@@ -11,4 +11,5 @@ done
 # Remove files with a 404
 find . -name "*.sdf" | xargs grep -l "Status: 404" | xargs rm
 
-rm CIDs.txt
+# Remove index files
+rm CIDs.txt CID-MeSH
