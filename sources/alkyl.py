@@ -58,17 +58,10 @@ commonbranches = ['C(C)(C)', #isopropyl
 # TODO: add parameters
 def alkyls():
     # straight chain alklyls
-    list = straightchain(12)
+    list = straightchain(6)
 
     # cyclic
-    for item in cyclic(10):
-        list.append(item)
-
-    # spiro rings
-    for item in spiro(5):
-        list.append(item)
-
-    for item in bicyclo(3):
+    for item in cyclic(6):
         list.append(item)
 
     # branching alkyls

@@ -9,6 +9,20 @@ import openbabel as ob
 import alkyl
 from enumeratechiral import enumerateChiral
 
+# generate simple fragments
+print "#straight-chain alkyls"
+for item in alkyl.straightchain(20):
+    print item
+print "#cycles"
+for item in alkyl.cyclic(10):
+    print item
+print "#bicyclo"
+for item in alkyl.bicyclo(4):
+    print item
+print "#spiro"
+for item in alkyl.spiro(6):
+    print item
+
 # get a list of fragments
 chains = alkyl.alkyls()
 
@@ -28,6 +42,8 @@ for smi in chains:
         unique.append(smi[:-1]) # strip the "F" off
 
 print "unique smiles: ", len(unique)
+# add benzene
+unique.append("c1ccccc1")
 
 smiles = []
 for alkylA in unique:
