@@ -7,3 +7,8 @@ for x in `cat CIDs.txt`; do
     echo $x
     curl -o $x.sdf "http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/$x/SDF?record_type=3d" >/dev/null 2>&1
 done
+
+# Remove files with a 404
+find . -name "*.sdf" | xargs grep -l "Status: 404" | xargs rm
+
+rm CIDs.txt
